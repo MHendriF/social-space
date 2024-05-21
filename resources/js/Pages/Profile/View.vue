@@ -70,7 +70,7 @@ function resetAvatarImage() {
 }
 
 function submitCoverImage() {
-    imagesForm.post(route("profile.updateCover"), {
+    imagesForm.post(route("profile.updateImages"), {
         onSuccess: (user) => {
             resetCoverImage();
             setTimeout(() => {
@@ -101,8 +101,8 @@ function submitAvatarImage() {
             >
                 {{ success }}
             </div>
-            <div v-if="errors.cover" class="my-2 py-2 px-3 font-medium text-sm bg-red-400 text-white">
-                {{ errors.cover }}
+            <div v-if="errors.cover || errors.avatar" class="my-2 py-2 px-3 font-medium text-sm bg-red-400 text-white">
+                {{ errors.cover }} {{ errors.avatar }}
             </div>
             <div class="group relative bg-white">
                 <img
