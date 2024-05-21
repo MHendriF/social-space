@@ -4,7 +4,10 @@ dist
 vendor/
 /vendor
 public/
+storage/
 .git
 **/.git
 package-lock.json
 composer.lock
+tailwind.config.json
+vite.config.js
