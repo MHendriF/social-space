@@ -10,7 +10,8 @@
 ## ⚙️ Tech Stack
 
 -   Laravel
--   Vue
+-   Inertia.js
+-   Vue.js
 -   Tailwind CSS
 -   Headless UI
 -   Breeze

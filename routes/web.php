@@ -13,6 +13,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/u/{user:username}', [Controllers\ProfileController::class, 'index'])
     ->name('profile');
 
+Route::middleware('auth')->group(function () {
+    Route::post('/profile/update-images', [Controllers\ProfileController::class, 'updateImage'])
+        ->name('profile.updateCover');
+});
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [Controllers\ProfileController::class, 'edit'])->name('profile.edit');
 //     Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
