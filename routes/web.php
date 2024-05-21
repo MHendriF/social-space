@@ -18,6 +18,10 @@ Route::middleware('auth')->group(function () {
         ->name('profile.updateImages');
         Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    Route::post('/post', [Controllers\PostController::class, 'store'])
+        ->name('post.create');
 });
 
 require __DIR__.'/auth.php';
