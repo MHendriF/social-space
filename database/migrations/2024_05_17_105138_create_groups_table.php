@@ -18,9 +18,9 @@ return new class extends Migration
             $table->boolean('auto_approval')->default(true);
             $table->text('about')->nullable();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('deleted_by')->constrained('users')->nullable();
-            $table->timestamp('deleted_at')->nullable();
+            $table->foreignId('deleted_by')->nullable()->constrained('users');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 
