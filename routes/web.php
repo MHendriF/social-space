@@ -16,11 +16,8 @@ Route::get('/u/{user:username}', [Controllers\ProfileController::class, 'index']
 Route::middleware('auth')->group(function () {
     Route::post('/profile/update-images', [Controllers\ProfileController::class, 'updateImage'])
         ->name('profile.updateImages');
+        Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [Controllers\ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
 
 require __DIR__.'/auth.php';

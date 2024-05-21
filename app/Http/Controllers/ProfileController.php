@@ -47,7 +47,7 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
         $request->user()->save();
-        return Redirect::route('profile.edit');
+        return to_route('profile', $request->user())->with('success', 'Your profile details were updated.');
     }
 
     public function updateImage(Request $request)
