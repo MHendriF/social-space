@@ -14,14 +14,12 @@ Route::get('/u/{user:username}', [Controllers\ProfileController::class, 'index']
     ->name('profile');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/profile/update-images', [Controllers\ProfileController::class, 'updateImage'])
-        ->name('profile.updateImages');
-        Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/update-images', [Controllers\ProfileController::class, 'updateImage'])->name('profile.updateImages');
+    Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    Route::post('/post', [Controllers\PostController::class, 'store'])
-        ->name('post.create');
+    Route::post('/post', [Controllers\PostController::class, 'store'])->name('post.create');
+    Route::put('/post/{post}', [Controllers\PostController::class, 'update'])->name('post.update');
 });
 
 require __DIR__.'/auth.php';
