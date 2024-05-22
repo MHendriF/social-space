@@ -5,6 +5,7 @@ import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import { PencilIcon, TrashIcon, EllipsisVerticalIcon } from "@heroicons/vue/20/solid";
 import PostUserHeader from "@/Components/app/PostUserHeader.vue";
+import { isImage } from "@/helpers.js";
 
 const props = defineProps({
     post: Object,
@@ -14,11 +15,6 @@ const emit = defineEmits(["editClick"]);
 
 function openEditModal() {
     emit("editClick", props.post);
-}
-
-function isImage(attachment) {
-    const mime = attachment.mime.split("/");
-    return mime[0].toLowerCase() === "image";
 }
 
 function deletePost() {
