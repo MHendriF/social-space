@@ -53,12 +53,23 @@ function closeModal() {
     show.value = false;
 }
 function submit() {
-    form.put(route("post.update", props.post.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            show.value = false;
-        },
-    });
+    if (form.id) {
+        form.put(route("post.update", props.post.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                show.value = false;
+                form.reset();
+            },
+        });
+    } else {
+        form.post(route("post.create"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                show.value = false;
+                form.reset();
+            },
+        });
+    }
 }
 </script>
 
@@ -96,7 +107,7 @@ function submit() {
                                     as="h3"
                                     class="flex items-center justify-between py-3 px-4 font-medium bg-gray-100 text-gray-900"
                                 >
-                                    Update Post
+                                    {{ form.id ? "Update Post" : "Create Post" }}
                                     <button
                                         @click="show = false"
                                         class="w-8 h-8 rounded-full hover:bg-black/5 transition flex items-center justify-center"
@@ -107,7 +118,6 @@ function submit() {
                                 <div class="p-4">
                                     <PostUserHeader :post="post" :show-time="false" class="mb-4" />
                                     <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
-                                    <!-- <InputTextarea v-model="form.body" class="mb-3 w-full" /> -->
                                 </div>
 
                                 <div class="py-3 px-4">
