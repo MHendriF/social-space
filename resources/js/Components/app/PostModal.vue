@@ -31,7 +31,7 @@ const editorConfig = {
 const attachmentExtensions = usePage().props.attachmentExtensions;
 const attachmentFiles = ref([]);
 const attachmentErrors = ref([]);
-const showExtensionsText = ref(false);
+const formErrors = ref({});
 const emit = defineEmits(["update:modelValue", "hide"]);
 
 const props = defineProps({
@@ -66,6 +66,18 @@ watch(
     },
 );
 
+const showExtensionsText = computed(() => {
+    for (let myFile of attachmentFiles.value) {
+        const file = myFile.file;
+        let parts = file.name.split(".");
+        let ext = parts.pop().toLowerCase();
+        if (!attachmentExtensions.includes(ext)) {
+            return true;
+        }
+    }
+    return false;
+});
+
 function closeModal() {
     show.value = false;
     emit("hide");
@@ -74,8 +86,8 @@ function closeModal() {
 
 function resetModal() {
     form.reset();
+    formErrors.value = {};
     attachmentFiles.value = [];
-    showExtensionsText.value = false;
     attachmentErrors.value = [];
     if (props.post.attachments) {
         props.post.attachments.forEach((file) => (file.deleted = false));
@@ -109,6 +121,7 @@ function submit() {
 }
 
 function processErrors(errors) {
+    formErrors.value = errors;
     for (const key in errors) {
         if (key.includes(".")) {
             const [, index] = key.split(".");
@@ -118,14 +131,8 @@ function processErrors(errors) {
 }
 
 async function onAttachmentChoose($event) {
-    showExtensionsText.value = false;
     console.log("onAttachmentChoose ", $event.target.files);
     for (const file of $event.target.files) {
-        let parts = file.name.split(".");
-        let ext = parts.pop().toLowerCase();
-        if (!attachmentExtensions.includes(ext)) {
-            showExtensionsText.value = true;
-        }
         const myFile = {
             file,
             url: await readFile(file),
@@ -214,6 +221,12 @@ function undoDelete(myFile) {
                                         Files must be one of the following extensions <br />
                                         <small>{{ attachmentExtensions.join(", ") }}</small>
                                     </div>
+                                    <div
+                                        v-if="formErrors.attachments"
+                                        class="border-l-4 border-red-500 py-2 px-3 bg-red-100 mt-3 text-gray-800"
+                                    >
+                                        {{ formErrors.attachments }}
+                                    </div>
                                 </div>
 
                                 <div
@@ -223,7 +236,7 @@ function undoDelete(myFile) {
                                     <div v-for="(myFile, idx) of computedAttachments" :key="idx">
                                         <div
                                             class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative border-2 rounded-md"
-                                            :class="attachmentErrors[idx] ? 'border-red-500' : ''"
+                                            :class="attachmentErrors[idx] ? 'border-red-500 border-dashed' : ''"
                                         >
                                             <div
                                                 v-if="myFile.deleted"
@@ -241,9 +254,8 @@ function undoDelete(myFile) {
                                             >
                                                 <XMarkIcon class="h-5 w-5" />
                                             </button>
-
                                             <img
-                                                v-if="isImage(myFile.file) || myFile"
+                                                v-if="isImage(myFile.file || myFile)"
                                                 :src="myFile.url"
                                                 class="object-contain aspect-square"
                                                 :class="myFile.deleted ? 'opacity-50' : ''"
