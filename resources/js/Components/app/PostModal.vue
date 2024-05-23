@@ -1,10 +1,10 @@
 <script setup>
-import { computed, onMounted, onUpdated, reactive, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { XMarkIcon, BookmarkIcon, PaperClipIcon, ArrowUturnLeftIcon } from "@heroicons/vue/24/solid";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 import InputTextarea from "@/Components/InputTextarea.vue";
 import PostUserHeader from "@/Components/app/PostUserHeader.vue";
-import { useForm } from "@inertiajs/vue3";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { isImage } from "@/helpers.js";
 
@@ -28,7 +28,10 @@ const editorConfig = {
     ],
 };
 
+const attachmentExtensions = usePage().props.attachmentExtensions;
 const attachmentFiles = ref([]);
+const attachmentErrors = ref([]);
+const showExtensionsText = ref(false);
 const emit = defineEmits(["update:modelValue", "hide"]);
 
 const props = defineProps({
@@ -72,7 +75,11 @@ function closeModal() {
 function resetModal() {
     form.reset();
     attachmentFiles.value = [];
-    props.post.attachments.forEach((file) => (file.deleted = false));
+    showExtensionsText.value = false;
+    attachmentErrors.value = [];
+    if (props.post.attachments) {
+        props.post.attachments.forEach((file) => (file.deleted = false));
+    }
 }
 
 function submit() {
@@ -81,23 +88,44 @@ function submit() {
         form._method = "PUT";
         form.post(route("post.update", props.post.id), {
             preserveScroll: true,
-            onSuccess: () => {
+            onSuccess: (res) => {
                 closeModal();
+            },
+            onError: (errors) => {
+                processErrors(errors);
             },
         });
     } else {
         form.post(route("post.create"), {
             preserveScroll: true,
-            onSuccess: () => {
+            onSuccess: (res) => {
                 closeModal();
+            },
+            onError: (errors) => {
+                processErrors(errors);
             },
         });
     }
 }
 
+function processErrors(errors) {
+    for (const key in errors) {
+        if (key.includes(".")) {
+            const [, index] = key.split(".");
+            attachmentErrors.value[index] = errors[key];
+        }
+    }
+}
+
 async function onAttachmentChoose($event) {
+    showExtensionsText.value = false;
     console.log("onAttachmentChoose ", $event.target.files);
     for (const file of $event.target.files) {
+        let parts = file.name.split(".");
+        let ext = parts.pop().toLowerCase();
+        if (!attachmentExtensions.includes(ext)) {
+            showExtensionsText.value = true;
+        }
         const myFile = {
             file,
             url: await readFile(file),
@@ -105,10 +133,8 @@ async function onAttachmentChoose($event) {
         attachmentFiles.value.push(myFile);
     }
     $event.target.value = null;
-    console.log(attachmentFiles.value);
 }
 async function readFile(file) {
-    console.log("readFile ", file);
     return new Promise((res, rej) => {
         if (isImage(file)) {
             const reader = new FileReader();
@@ -181,15 +207,23 @@ function undoDelete(myFile) {
                                 <div class="p-4">
                                     <PostUserHeader :post="post" :show-time="false" class="mb-4" />
                                     <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
+                                    <div
+                                        v-if="showExtensionsText"
+                                        class="border-l-4 border-amber-500 py-2 px-3 bg-amber-100 mt-3 text-gray-800"
+                                    >
+                                        Files must be one of the following extensions <br />
+                                        <small>{{ attachmentExtensions.join(", ") }}</small>
+                                    </div>
                                 </div>
 
                                 <div
-                                    class="grid gap-3 my-3"
+                                    class="grid gap-3 my-3 px-4"
                                     :class="[computedAttachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2']"
                                 >
-                                    <template v-for="(myFile, idx) of computedAttachments" :key="idx">
+                                    <div v-for="(myFile, idx) of computedAttachments" :key="idx">
                                         <div
-                                            class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative"
+                                            class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative border-2 rounded-md"
+                                            :class="attachmentErrors[idx] ? 'border-red-500' : ''"
                                         >
                                             <div
                                                 v-if="myFile.deleted"
@@ -216,7 +250,7 @@ function undoDelete(myFile) {
                                             />
                                             <div
                                                 v-else
-                                                class="flex flex-col justify-center items-center"
+                                                class="flex flex-col justify-center items-center px-3"
                                                 :class="myFile.deleted ? 'opacity-50' : ''"
                                             >
                                                 <PaperClipIcon class="w-10 h-10 mb-3" />
@@ -225,7 +259,8 @@ function undoDelete(myFile) {
                                                 </small>
                                             </div>
                                         </div>
-                                    </template>
+                                        <small class="text-red-500">{{ attachmentErrors[idx] }}</small>
+                                    </div>
                                 </div>
 
                                 <div class="flex gap-2 py-3 px-4">
