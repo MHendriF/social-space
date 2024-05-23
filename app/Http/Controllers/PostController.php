@@ -89,7 +89,6 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         $user = $request->user();
-
         DB::beginTransaction();
         $allFilePaths = [];
         try {

@@ -53,7 +53,6 @@ const show = computed({
 
 const computedAttachments = computed(() => {
     return [...attachmentFiles.value, ...(props.post.attachments || [])];
-    //return [...attachmentFiles.value, ...props.post.attachments];
 });
 
 watch(
@@ -61,8 +60,6 @@ watch(
     () => {
         console.log("This is triggered ", props.post);
         form.body = props.post.body || "";
-        console.log("computedAttachments ", computedAttachments);
-        //console.log("isImage ", isImage);
     },
 );
 
@@ -80,7 +77,6 @@ function resetModal() {
 
 function submit() {
     form.attachments = attachmentFiles.value.map((myFile) => myFile.file);
-    //console.log(form);
     if (props.post.id) {
         form._method = "PUT";
         form.post(route("post.update", props.post.id), {
@@ -236,7 +232,6 @@ function undoDelete(myFile) {
                                     <button
                                         type="button"
                                         class="flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full relative"
-                                        @click="submit"
                                     >
                                         <PaperClipIcon class="w-4 h-4 mr-2" />
                                         Attach Files
