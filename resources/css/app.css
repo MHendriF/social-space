@@ -99,3 +99,7 @@
     text-decoration: #4b9afa;
     color: blue;
 }
+
+.ck-content-output > *:last-child {
+    margin-bottom: 0;
+}
