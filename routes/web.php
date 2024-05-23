@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/post', [Controllers\PostController::class, 'store'])->name('post.create');
     Route::put('/post/{post}', [Controllers\PostController::class, 'update'])->name('post.update');
     Route::delete('/post/{post}', [Controllers\PostController::class, 'destroy'])->name('post.destroy');
+
+    Route::get('/post/download/{attachment}', [Controllers\PostController::class, 'downloadAttachment']) ->name('post.download');
 });
 
 require __DIR__.'/auth.php';
