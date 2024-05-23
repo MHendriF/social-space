@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->morphs('object');
+            $table->string('type'); // like, dislike, sad, laugh
             $table->timestamp('created_at')->nullable();
         });
     }

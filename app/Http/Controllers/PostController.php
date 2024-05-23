@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\ReactionType;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\PostAttachment;
+use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -147,5 +150,39 @@ class PostController extends Controller
     public function downloadAttachment(PostAttachment $attachment)
     {
         return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
+    }
+
+    public function postReaction(Request $request, Post $post)
+    {
+        $data = $request->validate([
+            'reaction' => [Rule::enum(ReactionType::class)]
+        ]);
+
+        $userId = Auth::id();
+
+        $reaction = Reaction::where('user_id', $userId)
+            ->where('object_id', $post->id)
+            ->where('object_type', Post::class)
+            ->first();
+
+        if ($reaction) {
+            $hasReaction = false;
+            $reaction->delete();
+        } else {
+            $hasReaction = true;
+            $reaction = Reaction::create([
+                'object_id' => $post->id,
+                'object_type' => Post::class,
+                'user_id' => $userId,
+                'type' => $data['reaction']
+            ]);
+        }
+
+        $reactions = Reaction::where('object_id', $post->id)->where('object_type', Post::class)->count();
+
+        return response([
+            'num_of_reactions' => $reactions,
+            'current_user_has_reaction' => $hasReaction
+        ]);
     }
 }
