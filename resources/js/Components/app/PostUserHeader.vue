@@ -14,7 +14,7 @@ defineProps({
     <div class="flex items-center gap-2">
         <a href="javascript:void(0)">
             <img
-                :src="post.user.avatar_url"
+                :src="post.user.avatar_url || '/img/default_avatar.svg'"
                 class="w-[40px] rounded-full border-2 transition-all hover:border-blue-500"
             />
         </a>
