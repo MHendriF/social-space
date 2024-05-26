@@ -39,6 +39,7 @@ function onModalHide() {
 
 <template>
     <div class="overflow-auto">
+        <pre>{{ posts }}</pre>
         <PostItem
             v-for="post of posts"
             :key="post.id"
