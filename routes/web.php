@@ -21,7 +21,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/post', [Controllers\PostController::class, 'store'])->name('post.create');
     Route::put('/post/{post}', [Controllers\PostController::class, 'update'])->name('post.update');
     Route::delete('/post/{post}', [Controllers\PostController::class, 'destroy'])->name('post.destroy');
-
     Route::get('/post/download/{attachment}', [Controllers\PostController::class, 'downloadAttachment']) ->name('post.download');
     Route::post('/post/{post}/reaction', [Controllers\PostController::class, 'postReaction'])->name('post.reaction');
 
@@ -29,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comment/{comment}', [Controllers\PostController::class, 'deleteComment'])->name('comment.delete');
     Route::put('/comment/{comment}', [Controllers\PostController::class, 'updateComment'])->name('comment.update');
     Route::post('/comment/{comment}/reaction', [Controllers\PostController::class, 'commentReaction'])->name('comment.reaction');
+
+    Route::post('/group', [Controllers\GroupController::class, 'store'])->name('group.create');
 });
 
 require __DIR__.'/auth.php';
