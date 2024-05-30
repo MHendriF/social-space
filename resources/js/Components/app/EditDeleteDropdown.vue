@@ -30,6 +30,7 @@ defineEmits(["edit", "delete"]);
 </script>
 
 <template>
+    <!-- <pre>{{ props.post.group.id }}</pre> -->
     <Menu as="div" class="relative inline-block text-left">
         <div>
             <MenuButton class="w-8 h-8 z-10 rounded-full hover:bg-black/5 transition flex items-center justify-center">

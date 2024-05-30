@@ -104,7 +104,6 @@ class PostController extends Controller
             $post->update($data);
 
             $deleted_ids = $data['deleted_file_ids'] ?? []; // 1, 2, 3, 4
-
             $attachments = PostAttachment::query()
                 ->where('post_id', $post->id)
                 ->whereIn('id', $deleted_ids)

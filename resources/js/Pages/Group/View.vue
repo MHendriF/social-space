@@ -45,7 +45,6 @@ const aboutForm = useForm({
     auto_approval: !!parseInt(usePage().props.group.auto_approval),
     about: usePage().props.group.about,
 });
-console.log("props: ", props);
 
 function onCoverChange(event) {
     imagesForm.cover = event.target.files[0];
