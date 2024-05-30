@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::post('/group', [Controllers\GroupController::class, 'store'])->name('group.create');
+    Route::put('/group/{group:slug}', [Controllers\GroupController::class, 'update'])->name('group.update');
     Route::post('/group/update-images/{group:slug}', [Controllers\GroupController::class, 'updateImage'])->name('group.updateImages');
     Route::post('/group/invite/{group:slug}', [Controllers\GroupController::class, 'inviteUsers'])->name('group.inviteUsers');
     Route::post('/group/join/{group:slug}', [Controllers\GroupController::class, 'join'])->name('group.join');
@@ -37,8 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comment/{comment}', [Controllers\PostController::class, 'deleteComment'])->name('comment.delete');
     Route::put('/comment/{comment}', [Controllers\PostController::class, 'updateComment'])->name('comment.update');
     Route::post('/comment/{comment}/reaction', [Controllers\PostController::class, 'commentReaction'])->name('comment.reaction');
-
-    Route::post('/group', [Controllers\GroupController::class, 'store'])->name('group.create');
 });
 
 require __DIR__.'/auth.php';
