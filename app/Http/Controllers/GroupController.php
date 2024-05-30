@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Notifications\InvitationApproved;
 use App\Notifications\InvitationGroup;
+use App\Notifications\RequestApproved;
 use App\Notifications\RequestToJoinGroup;
 use Carbon\Carbon;
 use App\Http\Enums\GroupUserRole;
@@ -28,9 +30,14 @@ class GroupController extends Controller
     public function profile(Group $group)
     {
         $group->load('currentUserGroup');
+        $users = $group->approvedUsers()->orderBy('name')->get();
+        $requests = $group->pendingUsers()->orderBy('name')->get();
+
         return Inertia::render('Group/View', [
             'success' => session('success'),
-            'group' => new GroupResource($group)
+            'group' => new GroupResource($group),
+            'users' => UserResource::collection($users),
+            'requests' => UserResource::collection($requests)
         ]);
     }
 
@@ -135,9 +142,7 @@ class GroupController extends Controller
     public function inviteUsers(InviteUserRequest $request, Group $group)
     {
         $data = $request->validated();
-
         $user = $request->user;
-
         $groupUser = $request->groupUser;
 
         if ($groupUser) {
@@ -215,5 +220,40 @@ class GroupController extends Controller
         ]);
 
         return back()->with('success', $successMessage);
+    }
+
+    public function approveRequest(Request $request, Group $group)
+    {
+        if (!$group->isAdmin(Auth::id())) {
+            return response("You don't have permission to perform this action", 403);
+        }
+
+        $data = $request->validate([
+            'user_id' => ['required'],
+            'action' => ['required']
+        ]);
+
+        $groupUser = GroupUser::where('user_id', $data['user_id'])
+            ->where('group_id', $group->id)
+            ->where('status', GroupUserStatus::PENDING->value)
+            ->first();
+
+        if ($groupUser) {
+            $approved = false;
+            if ($data['action'] === 'approve') {
+                $approved = true;
+                $groupUser->status = GroupUserStatus::APPROVED->value;
+            } else {
+                $groupUser->status = GroupUserStatus::REJECTED->value;
+            }
+            $groupUser->save();
+
+            $user = $groupUser->user;
+            $user->notify(new RequestApproved($groupUser->group, $user, $approved));
+
+            return back()->with('success', 'User "'.$user->name.'" was '.($approved ? 'approved' : 'rejected'));
+        }
+
+        return back();
     }
 }
