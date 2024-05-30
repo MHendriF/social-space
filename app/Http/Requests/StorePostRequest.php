@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Enums\GroupUserStatus;
+use App\Models\GroupUser;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\File;
 
 class StorePostRequest extends FormRequest
@@ -33,13 +36,21 @@ class StorePostRequest extends FormRequest
         return [
             'body' => ['nullable', 'string'],
             'user_id' => ['numeric'],
+            'group_id' => ['nullable', 'exists:groups,id', function($attribute, $value, \Closure $fail) {
+                $groupUser = GroupUser::where('user_id', Auth::id())
+                    ->where('group_id', $value)
+                    ->where('status', GroupUserStatus::APPROVED->value)
+                    ->exists();
+                if (!$groupUser) {
+                    $fail('You don\'t have permission to create post in this group');
+                }
+            }],
             'attachments' => [
                 'array',
                 'max:50',
                 function ($attribute, $value, $fail) {
                     // Custom rule to check the total size of all files
                     $totalSize = collect($value)->sum(fn(UploadedFile $file) => $file->getSize());
-
                     if ($totalSize > 1 * 1024 * 1024 * 1024) {
                         $fail('The total size of all files must not exceed 1GB.');
                     }

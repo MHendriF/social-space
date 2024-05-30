@@ -1,5 +1,5 @@
 <script setup>
-import { usePage } from "@inertiajs/vue3";
+import { usePage, Link } from "@inertiajs/vue3";
 import { ref } from "vue";
 import axiosClient from "@/axiosClient.js";
 import { ChatBubbleLeftEllipsisIcon, HandThumbUpIcon } from "@heroicons/vue/24/outline/index.js";
@@ -102,7 +102,7 @@ function onCommentDelete(comment) {
     <div class="flex gap-2 mb-3">
         <a href="javascript:void(0)">
             <img
-                :src="authUser.avatar_url || '/img/default_avatar.svg'"
+                :src="authUser.avatar_url"
                 class="w-[40px] rounded-full border-2 transition-all hover:border-blue-500"
             />
         </a>
@@ -120,12 +120,12 @@ function onCommentDelete(comment) {
         <div v-for="comment of data.comments" :key="comment.id" class="mb-4">
             <div class="flex justify-between gap-2">
                 <div class="flex gap-2">
-                    <a href="javascript:void(0)">
+                    <Link :href="route('profile', authUser.username)">
                         <img
-                            :src="comment.user.avatar_url || '/img/default_avatar.svg'"
+                            :src="comment.user.avatar_url"
                             class="w-[40px] rounded-full border-2 transition-all hover:border-blue-500"
                         />
-                    </a>
+                    </Link>
                     <div>
                         <h4 class="font-bold">
                             <a href="javascript:void(0)" class="hover:underline">

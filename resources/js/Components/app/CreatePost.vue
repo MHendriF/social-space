@@ -1,12 +1,19 @@
 <script setup>
 import { ref } from "vue";
-import InputTextarea from "@/Components/InputTextarea.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
+import InputTextarea from "@/Components/InputTextarea.vue";
 import PostModal from "@/Components/app/PostModal.vue";
 
+const showModal = ref(false);
 const authUser = usePage().props.auth.user;
 
-const showModal = ref(false);
+defineProps({
+    group: {
+        type: Object,
+        default: null,
+    },
+});
+
 const newPost = ref({
     id: null,
     body: "",
@@ -26,7 +33,7 @@ function showCreatePostModal() {
         >
             Click here to create new post
         </div>
-        <PostModal :post="newPost" v-model="showModal" />
+        <PostModal :post="newPost" :group="group" v-model="showModal" />
     </div>
 </template>
 

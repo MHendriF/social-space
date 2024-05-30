@@ -10,6 +10,8 @@ import InviteUserModal from "@/Pages/Group/InviteUserModal.vue";
 import UserListItem from "@/Components/app/UserListItem.vue";
 import TextInput from "@/Components/TextInput.vue";
 import GroupForm from "@/Components/app/GroupForm.vue";
+import PostList from "@/Components/app/PostList.vue";
+import CreatePost from "@/Components/app/CreatePost.vue";
 
 const showNotification = ref(true);
 const coverImageSrc = ref("");
@@ -28,6 +30,7 @@ const props = defineProps({
     group: {
         type: Object,
     },
+    posts: Object,
     users: Array,
     requests: Array,
 });
@@ -155,10 +158,7 @@ function updateGroup() {
                     {{ errors.cover }}
                 </div>
                 <div class="group relative bg-white">
-                    <img
-                        :src="coverImageSrc || group.cover_url || '/img/default_cover.jpg'"
-                        class="w-full h-[200px] object-cover"
-                    />
+                    <img :src="coverImageSrc || group.cover_url" class="w-full h-[200px] object-cover" />
                     <div v-if="isCurrentUserAdmin" class="absolute top-2 right-2">
                         <button
                             v-if="!coverImageSrc"
@@ -195,7 +195,7 @@ function updateGroup() {
                             class="flex items-center justify-center relative group/thumbnail -mt-[64px] ml-[48px] w-[128px] h-[128px] rounded-full"
                         >
                             <img
-                                :src="thumbnailImageSrc || group.thumbnail_url || '/img/default_avatar.webp'"
+                                :src="thumbnailImageSrc || group.thumbnail_url"
                                 class="w-full h-full object-cover rounded-full"
                             />
                             <button
@@ -266,7 +266,13 @@ function updateGroup() {
                     </TabList>
 
                     <TabPanels class="mt-2">
-                        <TabPanel class="bg-white p-3 shadow"> Posts </TabPanel>
+                        <TabPanel>
+                            <template v-if="posts">
+                                <CreatePost :group="group" />
+                                <PostList :posts="posts.data" class="flex-1" />
+                            </template>
+                            <div v-else class="py-8 text-center">You don't have permission to view these posts.</div>
+                        </TabPanel>
                         <TabPanel v-if="isJoinedToGroup">
                             <div class="mb-3">
                                 <TextInput :model-value="searchKeyword" placeholder="Type to search" class="w-full" />

@@ -107,10 +107,7 @@ function submitAvatarImage() {
                 {{ errors.cover }} {{ errors.avatar }}
             </div>
             <div class="group relative bg-white">
-                <img
-                    :src="coverImageSrc || user.cover_url || '/img/default_cover.jpg'"
-                    class="w-full h-[200px] object-cover"
-                />
+                <img :src="coverImageSrc || user.cover_url" class="w-full h-[200px] object-cover" />
                 <div class="absolute top-2 right-2">
                     <button
                         v-if="!coverImageSrc"
@@ -146,10 +143,7 @@ function submitAvatarImage() {
                     <div
                         class="flex items-center justify-center relative group/avatar -mt-[64px] ml-[48px] w-[128px] h-[128px] rounded-full"
                     >
-                        <img
-                            :src="avatarImageSrc || user.avatar_url || '/img/default_avatar.svg'"
-                            class="w-full h-full object-cover rounded-full"
-                        />
+                        <img :src="avatarImageSrc || user.avatar_url" class="w-full h-full object-cover rounded-full" />
                         <button
                             v-if="!avatarImageSrc"
                             class="absolute left-0 top-0 right-0 bottom-0 bg-black/50 text-gray-200 rounded-full opacity-0 flex items-center justify-center group-hover/avatar:opacity-100"
