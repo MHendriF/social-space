@@ -1,11 +1,12 @@
 <script setup>
 import { computed, ref } from "vue";
-import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import { usePage, useForm } from "@inertiajs/vue3";
+import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import Edit from "@/Pages/Profile/Edit.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import DangerButton from "@/Components/DangerButton.vue";
 import { XMarkIcon, PencilIcon, CheckCircleIcon, CameraIcon, PhotoIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
@@ -22,6 +23,8 @@ const props = defineProps({
     user: {
         type: Object,
     },
+    isCurrentUserFollower: Boolean,
+    followerCount: Number,
 });
 
 const imagesForm = useForm({
@@ -90,6 +93,16 @@ function submitAvatarImage() {
                 showNotification.value = false;
             }, 3000);
         },
+    });
+}
+
+function followUser() {
+    const form = useForm({
+        follow: !props.isCurrentUserFollower,
+    });
+
+    form.post(route("user.follow", props.user.id), {
+        preserveScroll: true,
     });
 }
 </script>
@@ -169,6 +182,17 @@ function submitAvatarImage() {
                                 <CheckCircleIcon class="h-5 w-5" />
                             </button>
                         </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center flex-1 p-4">
+                    <div>
+                        <h2 class="font-bold text-lg">{{ user.name }}</h2>
+                        <p class="text-xs text-gray-500">{{ followerCount }} follower(s)</p>
+                    </div>
+
+                    <div>
+                        <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser"> Follow User </PrimaryButton>
+                        <DangerButton v-else @click="followUser"> Unfollow User </DangerButton>
                     </div>
                 </div>
             </div>
