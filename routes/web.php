@@ -14,12 +14,15 @@ Route::get('/u/{user:username}', [Controllers\ProfileController::class, 'index']
 
 Route::get('/g/{group:slug}', [Controllers\GroupController::class, 'profile'])->name('group.profile');
 
+Route::get('/group/approve-invitation/{token}', [Controllers\GroupController::class, 'approveInvitation'])->name('group.approveInvitation');
+
 Route::middleware('auth')->group(function () {
     Route::post('/profile/update-images', [Controllers\ProfileController::class, 'updateImage'])->name('profile.updateImages');
     Route::patch('/profile', [Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/group/update-images/{group:slug}', [Controllers\GroupController::class, 'updateImage'])->name('group.updateImages');
+    Route::post('/group/invite/{group:slug}', [Controllers\GroupController::class, 'inviteUsers'])->name('group.inviteUsers');
 
     Route::post('/post', [Controllers\PostController::class, 'store'])->name('post.create');
     Route::put('/post/{post}', [Controllers\PostController::class, 'update'])->name('post.update');
