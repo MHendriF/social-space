@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/group/join/{group:slug}', [Controllers\GroupController::class, 'join'])->name('group.join');
     Route::post('/group/approve-request/{group:slug}', [Controllers\GroupController::class, 'approveRequest'])->name('group.approveRequest');
     Route::post('/group/change-role/{group:slug}', [Controllers\GroupController::class, 'changeRole'])->name('group.changeRole');
+    Route::delete('/group/remove-user/{group:slug}', [Controllers\GroupController::class, 'removeUser'])->name('group.removeUser');
 
     Route::post('/post', [Controllers\PostController::class, 'store'])->name('post.create');
     Route::put('/post/{post}', [Controllers\PostController::class, 'update'])->name('post.update');
