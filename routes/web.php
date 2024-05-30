@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/group/change-role/{group:slug}', [Controllers\GroupController::class, 'changeRole'])->name('group.changeRole');
     Route::delete('/group/remove-user/{group:slug}', [Controllers\GroupController::class, 'removeUser'])->name('group.removeUser');
 
+    Route::get('/post/{post}', [Controllers\PostController::class, 'view'])->name('post.view');
     Route::post('/post', [Controllers\PostController::class, 'store'])->name('post.create');
     Route::put('/post/{post}', [Controllers\PostController::class, 'update'])->name('post.update');
     Route::delete('/post/{post}', [Controllers\PostController::class, 'destroy'])->name('post.destroy');
