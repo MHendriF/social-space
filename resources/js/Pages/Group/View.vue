@@ -328,7 +328,7 @@ function deleteUser(user) {
                                 <GroupForm :form="aboutForm" />
                                 <PrimaryButton @click="updateGroup"> Submit </PrimaryButton>
                             </template>
-                            <div v-else class="ck-content-output" v-html="group.about"></div>
+                            <div v-else class="ck-content-output dark:text-gray-100" v-html="group.about"></div>
                         </TabPanel>
                     </TabPanels>
                 </TabGroup>
