@@ -199,18 +199,18 @@ function followUser() {
                                 </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="flex justify-between items-center flex-1 p-4">
-                        <div>
-                            <h2 class="font-bold text-lg">{{ user.name }}</h2>
-                            <p class="text-xs text-gray-500">{{ followerCount }} follower(s)</p>
-                        </div>
+                        <div class="flex justify-between items-center flex-1 p-4">
+                            <div>
+                                <h2 class="font-bold text-lg">{{ user.name }}</h2>
+                                <p class="text-xs text-gray-500">{{ followerCount }} follower(s)</p>
+                            </div>
 
-                        <div>
-                            <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
-                                Follow User
-                            </PrimaryButton>
-                            <DangerButton v-else @click="followUser"> Unfollow User </DangerButton>
+                            <div>
+                                <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
+                                    Follow User
+                                </PrimaryButton>
+                                <DangerButton v-else @click="followUser"> Unfollow User </DangerButton>
+                            </div>
                         </div>
                     </div>
                 </div>
