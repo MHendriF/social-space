@@ -208,7 +208,7 @@ function followUser() {
                                 <p class="text-xs text-gray-500">{{ followerCount }} follower(s)</p>
                             </div>
 
-                            <div>
+                            <div v-if="!isMyProfile">
                                 <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
                                     Follow User
                                 </PrimaryButton>
