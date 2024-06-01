@@ -158,7 +158,7 @@ function deleteUser(user) {
 
 <template>
     <AuthenticatedLayout>
-        <div class="max-w-screen-xl mx-auto h-full overflow-auto">
+        <div class="max-w-screen-lg mx-auto h-full overflow-auto">
             <div class="px-4">
                 <div
                     v-show="showNotification && success"

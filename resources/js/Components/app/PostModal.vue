@@ -271,16 +271,12 @@ function matchLink() {
     <BaseModal :title="post.id ? 'Update Post' : 'Create Post'" v-model="show" @hide="closeModal">
         <div class="p-4">
             <PostUserHeader :post="post" :show-time="false" class="mb-4 dark:text-gray-100" />
-
             <div v-if="formErrors.group_id" class="bg-red-400 py-2 px-3 rounded text-white mb-3">
                 {{ formErrors.group_id }}
             </div>
-
             <div class="relative group">
                 <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" @input="onInputChange"></ckeditor>
-
                 <UrlPreview :preview="form.preview" :url="form.preview_url" />
-
                 <button
                     @click="getAIContent"
                     :disabled="aiButtonLoading"

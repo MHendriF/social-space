@@ -120,7 +120,7 @@ function followUser() {
 
 <template>
     <AuthenticatedLayout>
-        <div class="max-w-[768px] mx-auto h-full overflow-auto">
+        <div class="max-w-screen-lg mx-auto h-full overflow-auto">
             <div class="px-4">
                 <div
                     v-show="showNotification && success"
