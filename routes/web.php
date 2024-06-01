@@ -52,6 +52,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/{comment}', [Controllers\PostController::class, 'updateComment'])->name('comment.update');
         Route::post('/{comment}/reaction', [Controllers\PostController::class, 'commentReaction'])->name('comment.reaction');
     });
+
+    Route::get('/search/{search?}', [Controllers\SearchController::class, 'search'])->name('search');
 });
 
 require __DIR__.'/auth.php';
