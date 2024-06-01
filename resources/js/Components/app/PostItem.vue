@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import axiosClient from "@/axiosClient.js";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
@@ -14,10 +15,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["editClick", "attachmentClick"]);
+const postBody = computed(() =>
+    props.post.body.replace(/(#\w+)(?![^<]*<\/a>)/g, (match, group) => {
+        const encodedGroup = encodeURIComponent(group);
+        return `<a href="/search/${encodedGroup}" class="hashtag">${group}</a>`;
+    }),
+);
 
 function openEditModal() {
     emit("editClick", props.post);
-    console.log("openEditModal ", props.post);
 }
 
 function openAttachment(idx) {
@@ -51,12 +57,12 @@ function sendReaction() {
             <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModal" @delete="deletePost" />
         </div>
         <div class="mb-3">
-            <ReadMore :content="post.body" />
+            <ReadMore :content="postBody" />
         </div>
         <div class="grid gap-3 mb-3" :class="[post.attachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2']">
             <PostAttachments :attachments="post.attachments" @attachmentClick="openAttachment" />
         </div>
-        <Disclosure v-slot="{ open }">
+        <Disclosure v-slot="{}">
             <div class="flex gap-2">
                 <button
                     @click="sendReaction"
