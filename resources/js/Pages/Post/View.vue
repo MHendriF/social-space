@@ -14,6 +14,7 @@ const showEditModal = ref(false);
 const showAttachmentsModal = ref(false);
 const editPost = ref({});
 const previewAttachmentsPost = ref({});
+
 function openEditModal(post) {
     editPost.value = post;
     showEditModal.value = true;

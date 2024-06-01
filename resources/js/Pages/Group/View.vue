@@ -12,6 +12,7 @@ import TextInput from "@/Components/TextInput.vue";
 import GroupForm from "@/Components/app/GroupForm.vue";
 import PostList from "@/Components/app/PostList.vue";
 import CreatePost from "@/Components/app/CreatePost.vue";
+import TabPhotos from "@/Pages/Profile/TabPhotos.vue";
 
 const showNotification = ref(true);
 const coverImageSrc = ref("");
@@ -33,6 +34,7 @@ const props = defineProps({
     posts: Object,
     users: Array,
     requests: Array,
+    photos: Array,
 });
 
 const imagesForm = useForm({
@@ -317,7 +319,9 @@ function deleteUser(user) {
                             </div>
                             <div class="py-8 text-center">There are no pending requests.</div>
                         </TabPanel>
-                        <TabPanel class="bg-white p-3 shadow"> Photos </TabPanel>
+                        <TabPanel class="bg-white p-3 shadow">
+                            <TabPhotos :photos="photos" />
+                        </TabPanel>
                         <TabPanel class="bg-white p-3 shadow">
                             <template v-if="isCurrentUserAdmin">
                                 <GroupForm :form="aboutForm" />
