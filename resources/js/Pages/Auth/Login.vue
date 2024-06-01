@@ -1,11 +1,11 @@
 <script setup>
+import { Head, Link, useForm } from "@inertiajs/vue3";
 import Checkbox from "@/Components/Checkbox.vue";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
 
 defineProps({
     canResetPassword: {
@@ -32,6 +32,13 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Log in" />
+        <div class="text-center dark:text-gray-100">
+            <h2 class="text-2xl text-center">Login</h2>
+            <span class="text-gray-400 text-sm">or</span>
+            <div class="flex justify-center">
+                <Link :href="route('register')" class="inline-block hover:underline"> create new account </Link>
+            </div>
+        </div>
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
