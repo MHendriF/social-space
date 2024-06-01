@@ -29,7 +29,7 @@ watch(
         if (page.props.posts) {
             allPosts.value = {
                 data: page.props.posts.data,
-                next: page.props.posts.links.next,
+                next: page.props.posts.links?.next,
             };
         }
     },
