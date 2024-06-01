@@ -55,7 +55,6 @@ function onCoverChange(event) {
         const reader = new FileReader();
         reader.onload = (e) => {
             coverImageSrc.value = e.target.result;
-            console.log(coverImageSrc);
         };
         reader.readAsDataURL(imagesForm.cover);
     }

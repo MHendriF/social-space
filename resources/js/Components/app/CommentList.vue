@@ -24,7 +24,6 @@ const editingComment = ref(null);
 const emit = defineEmits(["commentCreate", "commentDelete"]);
 
 function startCommentEdit(comment) {
-    console.log(comment);
     editingComment.value = {
         id: comment.id,
         comment: comment.comment.replace(/<br\s*\/?>/gi, "\n"), // <br />, <br > <br> <br/>, <br    />
@@ -51,10 +50,8 @@ function deleteComment(comment) {
         return false;
     }
     axiosClient.delete(route("comment.delete", comment.id)).then(({ data }) => {
-        console.log(props.data.comments);
         const commentIndex = props.data.comments.findIndex((c) => c.id === comment.id);
         props.data.comments.splice(commentIndex, 1);
-        console.log(props.data.comments);
         if (props.parentComment) {
             props.parentComment.num_of_comments -= data.deleted;
         }

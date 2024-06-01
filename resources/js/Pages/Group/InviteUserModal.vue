@@ -34,7 +34,6 @@ function resetModal() {
 function submit() {
     form.post(route("group.inviteUsers", page.props.group.slug), {
         onSuccess(res) {
-            console.log(res);
             closeModal();
         },
         onError(res) {

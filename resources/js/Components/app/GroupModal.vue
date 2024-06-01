@@ -35,7 +35,6 @@ function resetModal() {
 }
 function submit() {
     axiosClient.post(route("group.create"), form).then(({ data }) => {
-        console.log(data);
         closeModal();
         emit("create", data);
     });

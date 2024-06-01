@@ -85,7 +85,6 @@ const computedAttachments = computed(() => {
 watch(
     () => props.post,
     () => {
-        console.log("This is triggered ", props.post);
         form.body = props.post.body || "";
         onInputChange();
     },
@@ -120,7 +119,6 @@ function resetModal() {
 }
 
 function submit() {
-    console.log("submit ", props);
     if (props.group) {
         form.group_id = props.group.id;
     }
@@ -133,7 +131,6 @@ function submit() {
         form.post(route("post.update", props.post.id), {
             preserveScroll: true,
             onSuccess: (res) => {
-                console.log(res);
                 closeModal();
             },
             onError: (errors) => {
@@ -144,7 +141,6 @@ function submit() {
         form.post(route("post.create"), {
             preserveScroll: true,
             onSuccess: (res) => {
-                console.log(res);
                 closeModal();
             },
             onError: (errors) => {
@@ -165,7 +161,6 @@ function processErrors(errors) {
 }
 
 async function onAttachmentChoose($event) {
-    console.log("onAttachmentChoose ", $event.target.files);
     for (const file of $event.target.files) {
         const myFile = {
             file,
@@ -206,7 +201,6 @@ function generateContentWithAI() {
     if (!form.body) {
         return;
     }
-    //console.log("generateContentWithAI ", form);
     aiButtonLoading.value = true;
     axiosClient
         .post(route("post.aiContent"), {
@@ -217,7 +211,6 @@ function generateContentWithAI() {
             aiButtonLoading.value = false;
         })
         .catch((err) => {
-            console.log("err: ", err.response.data?.message);
             aiButtonLoading.value = false;
         });
 }
