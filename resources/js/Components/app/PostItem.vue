@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from "vue";
-import { router, usePage } from "@inertiajs/vue3";
+import { router, usePage, useForm } from "@inertiajs/vue3";
 import axiosClient from "@/axiosClient.js";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { ChatBubbleLeftRightIcon, HandThumbUpIcon } from "@heroicons/vue/24/outline";
+import { ChatBubbleLeftRightIcon, HandThumbUpIcon, MapPinIcon } from "@heroicons/vue/24/outline";
 import PostUserHeader from "@/Components/app/PostUserHeader.vue";
 import ReadMore from "@/Components/app/ReadMore.vue";
 import EditDeleteDropdown from "@/Components/app/EditDeleteDropdown.vue";
@@ -15,6 +15,8 @@ const props = defineProps({
     post: Object,
 });
 
+const authUser = usePage().props.auth.user;
+const group = usePage().props.group;
 const emit = defineEmits(["editClick", "attachmentClick"]);
 const postBody = computed(() => {
     let content = props.post.body.replace(/(?:(\s+)|<p>)((#\w+)(?![^<]*<\/a>))/g, (match, group1, group2) => {
@@ -23,6 +25,35 @@ const postBody = computed(() => {
     });
     return content;
 });
+
+const isPinned = computed(() => {
+    if (group?.id) {
+        return group?.pinned_post_id === props.post.id;
+    }
+    return authUser?.pinned_post_id === props.post.id;
+});
+
+function pinUnpinPost() {
+    const form = useForm({
+        forGroup: group?.id,
+    });
+    let isPinned = false;
+    if (group?.id) {
+        isPinned = group?.pinned_post_id === props.post.id;
+    } else {
+        isPinned = authUser?.pinned_post_id === props.post.id;
+    }
+    form.post(route("post.pinUnpin", props.post.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            if (group?.id) {
+                group.pinned_post_id = isPinned ? null : props.post.id;
+            } else {
+                authUser.pinned_post_id = isPinned ? null : props.post.id;
+            }
+        },
+    });
+}
 
 function openEditModal() {
     emit("editClick", props.post);
@@ -56,7 +87,19 @@ function sendReaction() {
     <div class="bg-white border rounded p-4 mb-3">
         <div class="flex items-center justify-between mb-3">
             <PostUserHeader :post="post" />
-            <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModal" @delete="deletePost" />
+            <div class="flex items-center gap-2">
+                <div v-if="isPinned" class="flex items-center text-xs">
+                    <MapPinIcon class="h-3 w-3" aria-hidden="true" />
+                    pinned
+                </div>
+                <EditDeleteDropdown
+                    :user="post.user"
+                    :post="post"
+                    @edit="openEditModal"
+                    @delete="deletePost"
+                    @pin="pinUnpinPost"
+                />
+            </div>
         </div>
         <div class="mb-3">
             <ReadMore :content="postBody" />

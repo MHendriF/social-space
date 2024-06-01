@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/search/{search?}', [Controllers\SearchController::class, 'search'])->name('search');
     Route::post('/fetch-url-preview', [Controllers\PostController::class, 'fetchUrlPreview'])->name('post.fetchUrlPreview');
+    Route::post('/{post}/pin', [Controllers\PostController::class, 'pinUnpin'])->name('post.pinUnpin');
 
 });
 

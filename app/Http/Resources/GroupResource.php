@@ -28,6 +28,7 @@ class GroupResource extends JsonResource
             'about' => $this->about,
             'description' => Str::words(strip_tags($this->about), 10),
             'user_id' => $this->user_id,
+            'pinned_post_id' => $this->pinned_post_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
