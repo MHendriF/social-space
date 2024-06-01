@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { XMarkIcon, PaperClipIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/solid";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 import { isImage, isVideo } from "@/helpers.js";
+import BaseModal from "@/Components/app/BaseModal.vue";
+
 const props = defineProps({
     attachments: {
         type: Array,
