@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class PostController extends Controller
 {
@@ -289,11 +290,9 @@ class PostController extends Controller
     public function updateComment(UpdateCommentRequest $request, Comment $comment)
     {
         $data = $request->validated();
-
         $comment->update([
             'comment' => nl2br($data['comment'])
         ]);
-
         return new CommentResource($comment);
     }
 
@@ -303,14 +302,33 @@ class PostController extends Controller
         $id = Auth::id();
         if ($comment->isOwner($id) || $post->isOwner($id)) {
             $comment->delete();
-
             if (!$comment->isOwner($id)) {
                 $comment->user->notify(new CommentDeleted($comment, $post));
             }
-
             return response('', 204);
         }
-
         return response("You don't have permission to delete this comment.", 403);
+    }
+
+    public function generateContentWithOpenAI(Request $request)
+    {
+        $prompt = $request->get('prompt');
+        //dd($prompt);
+
+        $result = OpenAI::chat()->create([
+            //'model' => 'gpt-4',
+            'model' => 'gpt-3.5-turbo',
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => "Please generate social media post content based on the following prompt. Generated formatted content with multiple paragraphs. Put hashtags after 2 lines from the main content". PHP_EOL .PHP_EOL. "Prompt: " .PHP_EOL
+                        . $prompt
+                ],
+            ],
+        ]);
+
+        return response([
+            'content' => $result->choices[0]->message->content
+        ]);
     }
 }

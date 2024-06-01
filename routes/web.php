@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/post')->group(function () {
         Route::get('/{post}', [Controllers\PostController::class, 'view'])->name('post.view');
         Route::post('', [Controllers\PostController::class, 'store'])->name('post.create');
+        Route::post('/ai-post', [Controllers\PostController::class, 'generateContentWithOpenAI'])->name('post.aiContent');
         Route::put('/{post}', [Controllers\PostController::class, 'update'])->name('post.update');
         Route::delete('/{post}', [Controllers\PostController::class, 'destroy'])->name('post.destroy');
         Route::get('/download/{attachment}', [Controllers\PostController::class, 'downloadAttachment']) ->name('post.download');
