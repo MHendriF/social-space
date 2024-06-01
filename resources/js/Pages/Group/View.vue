@@ -280,11 +280,11 @@ function deleteUser(user) {
                             <template v-if="posts">
                                 <CreatePost :group="group" />
                                 <PostList v-if="posts.data.length" :posts="posts.data" class="flex-1" />
-                                <div v-else class="py-8 text-center dark:text-gray-100">
+                                <div v-else class="py-8 text-center text-gray-600 dark:text-gray-100">
                                     There are no posts in this group. Be the first and create it.
                                 </div>
                             </template>
-                            <div v-else class="py-8 text-center dark:text-gray-100">
+                            <div v-else class="py-8 text-center text-gray-600 dark:text-gray-100">
                                 You don't have permission to view these posts.
                             </div>
                         </TabPanel>
@@ -317,7 +317,9 @@ function deleteUser(user) {
                                     @reject="rejectUser"
                                 />
                             </div>
-                            <div class="py-8 text-center dark:text-gray-100">There are no pending requests.</div>
+                            <div class="py-8 text-center text-gray-600 dark:text-gray-100">
+                                There are no pending requests.
+                            </div>
                         </TabPanel>
                         <TabPanel>
                             <TabPhotos :photos="photos" />

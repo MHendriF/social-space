@@ -242,6 +242,10 @@ function followUser() {
                             <template v-if="posts">
                                 <CreatePost />
                                 <PostList :posts="posts.data" class="flex-1" />
+                                <PostList v-if="posts.data.length" :posts="posts.data" class="flex-1" />
+                                <div v-else class="py-8 text-center text-gray-600 dark:text-gray-100">
+                                    There are no posts.
+                                </div>
                             </template>
                             <div v-else class="py-8 text-center dark:text-gray-100">
                                 You don't have permission to view these posts.
@@ -263,7 +267,9 @@ function followUser() {
                                     class="shadow rounded-lg"
                                 />
                             </div>
-                            <div v-else class="text-center py-8 dark:text-gray-100">User does not have followers.</div>
+                            <div v-else class="text-center py-8 text-gray-600 dark:text-gray-100">
+                                User does not have followers.
+                            </div>
                         </TabPanel>
                         <TabPanel>
                             <div class="mb-3">
@@ -281,8 +287,8 @@ function followUser() {
                                     class="shadow rounded-lg"
                                 />
                             </div>
-                            <div v-else class="text-center py-8 dark:text-gray-100">
-                                The user is not following to anybody
+                            <div v-else class="text-center py-8 text-gray-600 dark:text-gray-100">
+                                The user is not following to anybody.
                             </div>
                         </TabPanel>
                         <TabPanel>
