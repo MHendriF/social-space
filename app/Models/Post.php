@@ -57,8 +57,16 @@ class Post extends Model
         $query = Post::query()
             ->withCount('reactions')
             ->with([
+                'user',
+                'group',
+                'group.currentUserGroup',
+                'attachments',
                 'comments' => function ($query) use ($userId) {
                     $query->withCount('reactions');
+                },
+                'comments.user',
+                'comments.reactions' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId); // SELECT * from reactions WHERE user_id = ?
                 },
                 'reactions' => function ($query) use ($userId) {
                 $query->where('user_id', $userId);
