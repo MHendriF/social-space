@@ -7,6 +7,19 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## 🚀 Feature
+
+-   Generate ContentUsing OpenAI or GeminiAI
+-   CRUD User
+-   CRUD Group
+-   CRUD Post In Timeline
+-   CRUD Post In Group
+-   Follow/UnFollow User
+-   Invite Member
+-   Join To Group
+-   Email Notification
+-   Global Search User, Post and Group
+
 ## ⚙️ Tech Stack
 
 -   Laravel
@@ -15,7 +28,13 @@
 -   Tailwind CSS
 -   Headless UI
 -   Breeze
+-   OpenAI - API
+-   GeminiAI - API
 
-## Credits
+## ❤️ Credits
 
 [The Codeholic](https://www.youtube.com/@TheCodeholic)
+
+## 🤖 Author
+
+_M Hendri Febriansyah_
