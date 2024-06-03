@@ -15,6 +15,7 @@ use App\Notifications\InvitationGroup;
 use App\Notifications\RequestApproved;
 use App\Notifications\RequestToJoinGroup;
 use App\Notifications\RoleChanged;
+use App\Notifications\SimpleNotification;
 use App\Notifications\UserRemovedFromGroup;
 use Carbon\Carbon;
 use App\Http\Enums\GroupUserRole;
@@ -203,8 +204,14 @@ class GroupController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        $user->notify(new InvitationGroup($group, $hours, $token));
+        //$user->notify(new InvitationGroup($group, $hours, $token));
 
+        $subject = "You are invited";
+        $content = 'You have been invited to join to group "' . $group->name . '"';
+        $contentBottom = 'The link will be valid for next ' . $hours . ' hours';
+        $actionText = "Join the Group";
+        $url = url(route('group.approveInvitation', $token));
+        $user->notify(new SimpleNotification($subject, $content, $actionText, $url, $contentBottom));
 
         return back()->with('success', 'User was invited to join to group');
     }
@@ -234,7 +241,12 @@ class GroupController extends Controller
 
         $adminUser = $groupUser->adminUser;
 
-        $adminUser->notify(new InvitationApproved($groupUser->group, $groupUser->user));
+        //$adminUser->notify(new InvitationApproved($groupUser->group, $groupUser->user));
+        $subject = "Request was approved";
+        $content = 'User "'.$groupUser->user->name.'" has join to group "'.$groupUser->group->name.'"';
+        $actionText = "Open Group";
+        $url = url(route('group.profile', $groupUser->group));
+        $adminUser->notify(new SimpleNotification($subject, $content, $actionText, $url));
 
         return redirect(route('group.profile', $groupUser->group))->with('success', 'You accepted to join to group "'.$groupUser->group->name.'"');
     }
@@ -248,7 +260,13 @@ class GroupController extends Controller
         if (!$group->auto_approval) {
             $status = GroupUserStatus::PENDING->value;
 
-            Notification::send($group->adminUsers, new RequestToJoinGroup($group, $user));
+            $subject = "Request to join group";
+            $content = 'User "'.$user->name.'" requested to join to group "'.$group->name.'"';
+            $actionText = "Approve Request";
+            $url = url(route('group.profile', $group));
+
+            //Notification::send($group->adminUsers, new RequestToJoinGroup($group, $user));
+            Notification::send($group->adminUsers, new SimpleNotification($subject, $content, $actionText, $url));
             $successMessage = 'Your request has been accepted. You will be notified once you will be approved';
         }
 
@@ -290,7 +308,14 @@ class GroupController extends Controller
             $groupUser->save();
 
             $user = $groupUser->user;
-            $user->notify(new RequestApproved($groupUser->group, $user, $approved));
+            //$user->notify(new RequestApproved($groupUser->group, $user, $approved));
+
+            $status = ($approved ? 'approved' : 'rejected');
+            $subject = 'Request was ' . $status;
+            $content = 'Your request to join to group "' . $groupUser->group->name . '" has been ' . $status;
+            $actionText = "Open Group";
+            $url = url(route('group.profile', $group));
+            $user->notify(new SimpleNotification($subject, $content, $actionText, $url));
 
             return back()->with('success', 'User "'.$user->name.'" was '.($approved ? 'approved' : 'rejected'));
         }
@@ -321,7 +346,13 @@ class GroupController extends Controller
         if ($groupUser) {
             $groupUser->role = $data['role'];
             $groupUser->save();
-            $groupUser->user->notify(new RoleChanged($group, $data['role']));
+            //$groupUser->user->notify(new RoleChanged($group, $data['role']));
+
+            $subject = "Role was changed";
+            $content = 'Your role was changed into "'.$groupUser->role.'" for group "'.$group->name.'".';
+            $actionText = "Open Group";
+            $url = url(route('group.profile', $group));
+            $groupUser->user->notify(new SimpleNotification($subject, $content, $actionText, $url));
         }
         return back();
     }
