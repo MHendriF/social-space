@@ -19,7 +19,10 @@ use App\Notifications\PostCreated;
 use App\Notifications\PostDeleted;
 use App\Notifications\ReactionAddedOnComment;
 use App\Notifications\ReactionAddedOnPost;
+use App\Notifications\SimpleNotification;
+use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -158,7 +161,13 @@ class PostController extends Controller
             $post->delete();
 
             if (!$post->isOwner($id)) {
-                $post->user->notify(new PostDeleted($post->group));
+                //$post->user->notify(new PostDeleted($post->group));
+
+                $subject = "Post Deleted";
+                $content = 'Your post was deleted inside group "'.$post->group->name.'".';
+                $actionText = "Open Group";
+                $url = url(route('group.profile', $post->group->slug));
+                $post->user->notify(new SimpleNotification($subject, $content, $actionText, $url));
             }
 
             return back();
@@ -199,7 +208,13 @@ class PostController extends Controller
 
             if (!$post->isOwner($userId)) {
                 $user = User::where('id', $userId)->first();
-                $post->user->notify(new ReactionAddedOnPost($post, $user));
+                //$post->user->notify(new ReactionAddedOnPost($post, $user));
+
+                $subject = "New Reaction";
+                $content = 'User "'.$user->username.'" liked your post.';
+                $actionText = "View Post";
+                $url = url(route('post.view', $post->id));
+                $post->user->notify(new SimpleNotification($subject, $content, $actionText, $url));
             }
         }
 
@@ -287,14 +302,20 @@ class PostController extends Controller
             $deletedCommentCount = count($allComments);
             $comment->delete();
             if (!$comment->isOwner($id)) {
-                $comment->user->notify(new CommentDeleted($comment, $post));
+                //$comment->user->notify(new CommentDeleted($comment, $post));
+
+                $subject = "Comment Deleted";
+                $content = 'You comment "'.Str::words($comment->comment, 5).'" was removed on the post.';
+                $actionText = "View Post";
+                $url = url(route('post.view', $post->id));
+                $comment->user->notify(new SimpleNotification($subject, $content, $actionText, $url));
             }
             return response(['deleted' => $deletedCommentCount], 200);
         }
         return response("You don't have permission to delete this comment.", 403);
     }
 
-    public function generateContentWithOpenAI(Request $request)
+    public function generateContentUsingOpenAI(Request $request)
     {
         $prompt = $request->get('prompt');
         //dd($prompt);
@@ -313,6 +334,17 @@ class PostController extends Controller
 
         return response([
             'content' => $result->choices[0]->message->content
+        ]);
+    }
+
+    public function generateContentUsingGeminiAI(Request $request)
+    {
+        $prompt = $request->get('prompt');
+        $response = Gemini::geminiPro()->generateContent($prompt);
+        $result = $response->text();
+
+        return response([
+            'content' => Str::markdown($result)
         ]);
     }
 

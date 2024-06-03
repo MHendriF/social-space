@@ -278,7 +278,7 @@ function matchLink() {
                 <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" @input="onInputChange"></ckeditor>
                 <UrlPreview :preview="form.preview" :url="form.preview_url" />
                 <button
-                    @click="getAIContent"
+                    @click="generateContentWithAI"
                     :disabled="aiButtonLoading"
                     class="absolute right-1 top-12 w-8 h-8 p-1 rounded bg-indigo-500 hover:bg-indigo-600 text-white flex justify-center items-center transition-all opacity-0 group-hover:opacity-100 disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:hover:bg-indigo-400"
                 >
